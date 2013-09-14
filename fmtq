@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -e
+
+git checkout master
+git branch debian
+git rm -r debian/
+git commit -m "Remove Debian packaging from master"
+git checkout debian
+git merge master -s ours --no-ff -m 'Retain Debian packaging on debian branch'
+
+echo -e "[DEFAULT]\nupstream-tree=branch\nupstream-branch=master\ndebian-branch=debian" > debian/gbp.conf
+git add debian/gbp.conf
+
+dch -U "Add git-buildpackage configuration"
+
+if [ -f debian/source/format ]; then
+	dch --distribution=unstable -r ""
+	git add debian/changelog
+	git commit -m "Add git-buildpackage configuration"
+else
+	echo -e "3.0 (quilt)" > debian/source/format
+
+	dch "Set source format to 3.0 (quilt)"
+	dch --distribution=unstable -r ""
+	git add debian/source/ debian/changelog
+
+	git commit -m "Make the package work with git buildpackage
+
+Add gbp.conf and source/format."
+fi

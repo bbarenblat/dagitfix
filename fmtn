@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+
+cd debian
+mkdir -v source
+echo -e "3.0 (native)" > source/format
+echo -e "[DEFAULT]\nupstream-tree=branch\nupstream-branch=master\ndebian-branch=master" > gbp.conf
+cd ..
+
+dch -U "Add git-buildpackage configuration"
+dch "Set source format to 3.0 (native)"
+dch --distribution=unstable -r ""
+git add debian/source/ debian/gbp.conf debian/changelog
+
+git commit -m "Make the package work with git buildpackage
+
+Add gbp.conf and source/format."
+
