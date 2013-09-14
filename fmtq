@@ -19,6 +19,7 @@ if [ -f debian/source/format ]; then
 	git add debian/changelog
 	git commit -m "Add git-buildpackage configuration"
 else
+	mkdir -p debian/source
 	echo -e "3.0 (quilt)" > debian/source/format
 
 	dch "Set source format to 3.0 (quilt)"
